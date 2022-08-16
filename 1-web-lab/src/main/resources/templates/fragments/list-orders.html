@@ -1,0 +1,29 @@
+<table>
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Customer</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="order : ${orders}">
+            <td th:text="${order.getId()}"></td>
+            <td th:text="${order.getCustomerName()}"></td>
+            <td th:text="${order.getProduct()}"></td>
+            <td th:text="${order.getQuantity()}"></td>
+            <td th:text="${order.getUnitPrice()}"></td>
+            <td th:text="${order.getTotal()}"></td>
+            <td>
+                <form class="delete-form" action="/orders/delete" method="post">
+                    <input type="hidden" name="id" th:value="${order.getId()}">
+                    <button class="waves-effect waves-light btn-floating red"><i class="material-icons left">delete</i></button>
+                </form>
+            </td>
+        </tr>
+    </tbody>
+</table>

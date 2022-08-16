@@ -1,0 +1,13 @@
+<html lang="en">
+   <head th:replace="fragments/head"></head>
+   <body>
+      <header th:replace="fragments/header"></header>
+
+      <div id="content">
+         <h1>Orders</h1>
+
+         <div th:replace="fragments/create-order"></div>
+         <div th:replace="fragments/list-orders"></div>
+      </div>
+   </body>
+</html>

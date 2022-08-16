@@ -1,0 +1,7 @@
+CREATE TABLE Orders
+(
+    Id UNIQUEIDENTIFIER PRIMARY KEY,
+    CustomerName NVARCHAR(50) NOT NULL,
+    Product NVARCHAR(20) NOT NULL,
+    Quantity int NOT NULL
+);

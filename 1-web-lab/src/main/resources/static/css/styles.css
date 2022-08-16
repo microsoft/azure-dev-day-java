@@ -1,0 +1,27 @@
+#content {
+    padding: 1rem;
+}
+
+h1 {
+    margin-top: 0;
+}
+
+.brand-logo {
+    margin-left: 1rem;
+}
+
+.create-form {
+    margin-bottom: 2rem;
+}
+
+.row-no-margin {
+    margin-bottom: 0;
+}
+
+.row-big-margin {
+    margin-bottom: 3rem;
+}
+
+.delete-form {
+    margin-bottom: 0;
+}

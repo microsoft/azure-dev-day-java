@@ -1,0 +1,93 @@
+<form class="create-form" action="/orders/create" method="post">
+    <div class="row row-no-margin">
+        <div class="input-field col s4">
+            <input id="customerName" name="customerName" type="text" class="validate">
+            <label for="customerName">Customer Name</label>
+        </div>
+        <div class="input-field col s3">
+            <select id="product" name="product">
+                <option th:each="product : ${products.values()}" th:value="${product.getName()}" th:data-price="${product.getPrice()}">
+                    <span th:text="${product.getName()}"></span> - <span th:text="${product.getPrice()}"></span>
+                </option>
+            </select>
+            <label>Product</label>
+        </div>
+        <div class="input-field col s1">
+            <input id="quantity" name="quantity" type="number" class="validate" value="1">
+            <label for="quantity">Quantity</label>
+        </div>
+        <div class="input-field col s2">
+            <input disabled value="$0.00" id="total" type="text" class="validate">
+            <label for="total">Total</label>
+        </div>
+    </div>
+    <div class="row row-big-margin">
+        <div class="col s12">
+            <button id="submitButton" type="submit" disabled class="waves-effect waves-light btn">Create</button>
+            <button type="button" class="waves-effect waves-light btn white black-text">Clear</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    $(function() {
+        validateForm();
+        
+        const selects = document.querySelectorAll('select');
+        var instances = M.FormSelect.init(selects, {});
+        calculateTotal();
+    });
+
+
+    // Disable enter key for submit.
+    $('input').on('keypress', (e) => {
+        const code = e.keyCode || e.which;
+        if (code == 13) {
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    const calculateTotal = () => {
+        const quantity = $('#quantity').val();
+        const product = $('#product').val();
+
+        if (!quantity || !product) {
+            $('#total').val("$0.00");
+        } else {
+            $.ajax({
+                url: '/products/' + product,
+                type: 'GET',
+                success: (data) => {
+                    const total = quantity * data.price;
+                    $('#total').val(`\$${total}`);
+                }
+            });
+        }
+    }
+
+    const validateForm = () => {
+        const name = $('#customerName').val();
+        const product = $('#product').val();
+        const quantity = $('#quantity').val();
+
+        if (!name || !product || quantity <= 0) {
+            $('#submitButton').attr('disabled', true);
+        } else {
+            $('#submitButton').attr('disabled', false);
+        }
+    }
+
+    $('#quantity').on('keyup', () => {
+        calculateTotal();
+        validateForm();
+    });
+
+    $('#product').on('change', () => {
+        calculateTotal();
+        validateForm();
+    });
+
+    $('#customerName').on('keypress', () => validateForm());
+
+</script>
