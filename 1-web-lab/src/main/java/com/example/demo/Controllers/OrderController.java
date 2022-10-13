@@ -44,10 +44,10 @@ public class OrderController {
     }
 
     @PostMapping("/orders/delete")
-    public String delete(UUID id) {
-        orderRepository.deleteById(id);
+    public String delete(Order order) {
+        orderRepository.deleteById(order.getId());
 
-        log.info("Deleted order " + id);
+        log.info("Deleted order " + order.getId());
 
         return "redirect:/";
     }
