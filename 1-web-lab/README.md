@@ -161,7 +161,7 @@ We encourage you to follow along the hands-on labs during lab sessions.
     {
         "name": "AZ_SQL_SERVER_PASSWORD",
         // Replace with the password you created for the Azure SQL Server
-        "value": "y2$*D7DBdxq5", 
+        "value": "Your Password Here", 
         "slotSetting": false
     },
     {
@@ -224,7 +224,6 @@ We encourage you to follow along the hands-on labs during lab sessions.
 
 ## Part 4: Clean Up Azure Resources
 
-1. In the Azure portal, click on **Resource groups**.
-2. Click on **rg-azure-dev-day**.
-3. Click on **Delete resource group**.
-4. Click on **Delete**.
+1. In the Azure portal, Use the search bar to navigate to your resource group (**rg-azure-dev-day**).
+2. Click on **Delete resource group**.
+3. Click on **Delete**.
