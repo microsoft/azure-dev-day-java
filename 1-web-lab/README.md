@@ -17,6 +17,8 @@ During this lab you will learn to:
 - Deploy Azure Resources like Azure SQL and a Web App host in Azure App Services
 - Configure the Web App to connect to the Azure SQL database
 - Execute SQL code in the Portal to create a table
+- Use Cloud Shell to deploy the application to the Web App
+- Use the Web App to view the data and make changes to the database
 
 **NOTE: This exercise is a section of a day-long workshop on Azure Dev Day, the complete workshop labs may be found [here](https://aka.ms/azure-dev-day-java).**
 
