@@ -1,14 +1,12 @@
-# Azure Dev Day - Web solutions lab
+# Azure Dev Day - Web solutions lab one
 
 **Overview**:
 
 - [Requirements](#requirements)
-- [Step 1: Deploy resources to Azure](#step-1-deploy-resources-to-azure)
-- [Step 2: Setup application configuration](#step-2-setup-application-configuration)
-- [Step 3: Deploy GitHub application](#step-3-deploy-github-application)
-- [Step 4: Troubleshooting application issues](#step-4-troubleshooting-application-issues)
-- [Step 5: Fixing connectivity issues](#step-5-fixing-connectivity-issues)
-- [Step 6: Clean up resources](#step-6-clean-up-resources)
+- [Part 1: Deploy and Configure Azure SQL](#part-1-deploy-and-configure-azure-sql)
+- [Part 2: Deploy and Configure App Service](#part-2-deploy-and-configure-app-service)
+- [Part 3: Use Cloud Shell to Deploy the Application](#part-3-use-cloud-shell-to-deploy-the-application)
+- [Part 4: Clean Up Azure Resources](#part-4-clean-up-azure-resources)
 
 ## Objectives
 
@@ -27,15 +25,8 @@ During this lab you will learn to:
 We encourage you to follow along the hands-on labs during lab sessions.
 
 - If you don't have an Azure Subscription to use for these labs, please create a free subscription at <https://azure.microsoft.com/free/>.
-- [Visual Studio Code](https://code.visualstudio.com/) with the following extensions
-  - [Azure Tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-node-azure-pack)
-  - [Rest Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
-  - [Extension Pack for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack)
-- [Java 11](https://docs.microsoft.com/en-us/java/openjdk/download#openjdk-11)
-- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
-- [Git](https://git-scm.com/downloads)
 
-## Lab 1: Deploy and Configure Azure SQL
+## Part 1: Deploy and Configure Azure SQL
 
 1. Login to the azure portal at <https://portal.azure.com>
 2. Search for thew resource called **Azure SQL** and create a new instance of it.
@@ -125,7 +116,7 @@ We encourage you to follow along the hands-on labs during lab sessions.
 
         - Click on **Run**.
 
-## Lab 2: Deploy and Configure App Service
+## Part 2: Deploy and Configure App Service
 
 1. Now with the table created, we can move on to the next step. This step will create a new Web App in Azure App Services. This will be the host for our application. Use the search bar at the top of the page to search for **App Services**. Then click on **App Services**.
 2. Click on **Create**.
@@ -194,7 +185,7 @@ We encourage you to follow along the hands-on labs during lab sessions.
 
 15. Click on **OK**. Then click on **Save** and **Continue**.
 
-## Lab 3: Use Cloud Shell to Deploy the Application
+## Part 3: Use Cloud Shell to Deploy the Application
 
 1. Open Azure Cloud Shell. Click on the **Cloud Shell** icon in the top right of the portal. Then click on **Bash**. This will open a terminal window in the portal. You may need to create a storage account. If so, follow the prompts.
 2. In the terminal window, run the following command to clone the repository and navigate to the project folder.
@@ -228,3 +219,10 @@ We encourage you to follow along the hands-on labs during lab sessions.
 6. Copy the URL and paste it into a new browser tab. You should see the following page.
 
     ![Web App](./media/WorkingApp.png)
+
+## Part 4: Clean Up Azure Resources
+
+1. In the Azure portal, click on **Resource groups**.
+2. Click on **rg-azure-dev-day**.
+3. Click on **Delete resource group**.
+4. Click on **Delete**.
