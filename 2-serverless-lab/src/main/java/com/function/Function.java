@@ -10,26 +10,26 @@ public class Function {
     public void ProcessFileUpload(
             @EventGridTrigger(name = "event") String uploadData,
             @CosmosDBOutput(name = "database",
-                databaseName = "AzureDevDay",
-                collectionName = "Uploads",
+                databaseName = "%DatabaseName%",
+                collectionName = "%CollectionName%",
                 connectionStringSetting = "CosmosConnectionString") OutputBinding<String> outputItem,
                 final ExecutionContext context) {
         context.getLogger().info("Uploaded data: " + uploadData);
         outputItem.setValue(uploadData);
     }
     
-    @FunctionName("GetFiles")
-    public HttpResponseMessage GetFiles(
+    @FunctionName("GetUploads")
+    public HttpResponseMessage GetUploads(
             @HttpTrigger(
                 name = "req",
                 methods = { HttpMethod.GET },
-                route = "files",
+                route = "uploads",
                 authLevel = AuthorizationLevel.ANONYMOUS)
             HttpRequestMessage<Optional<String>> request,
             @CosmosDBInput(
                 name = "database",
-                databaseName = "AzureDevDay",
-                collectionName = "Uploads",
+                databaseName = "%DatabaseName%",
+                collectionName = "%CollectionName%",
                 connectionStringSetting = "CosmosConnectionString",
                 sqlQuery = "select * from u") String uploads,
             final ExecutionContext context) {
@@ -37,18 +37,18 @@ public class Function {
         return request.createResponseBuilder(HttpStatus.OK).body(uploads).build();
     }
     
-    @FunctionName("GetFile")
-    public HttpResponseMessage GetFile(
+    @FunctionName("GetUpload")
+    public HttpResponseMessage GetUpload(
             @HttpTrigger(
                 name = "req",
                 methods = { HttpMethod.GET },
-                    route = "files/{id}", 
+                    route = "uploads/{id}", 
                 authLevel = AuthorizationLevel.ANONYMOUS)
             HttpRequestMessage<Optional<String>> request,
             @CosmosDBInput(
                 name = "database",
-                databaseName = "AzureDevDay",
-                collectionName = "Uploads",
+                databaseName = "%DatabaseName%",
+                collectionName = "%CollectionName%",
                 connectionStringSetting = "CosmosConnectionString",
                 id = "{id}",
                 partitionKey = "{id}"
