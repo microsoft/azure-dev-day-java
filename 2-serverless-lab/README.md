@@ -1,8 +1,6 @@
-# Azure Dev Day - Serverless Exercise 
+# Azure Dev Day - Serverless Lab
 
 <!-- TOC -->
-**Overview**: 
-
 - [Requirements](#requirements)
 - [Step 1: Setup Azure subscription and properties](#step-1-setup-azure-subscription-and-properties)
 - [Step 2: Create an Azure Resource Group ](#step-2-create-an-azure-resource-group)
@@ -12,104 +10,81 @@
 - [Step 6: Event Grid Blob Storage Test](#step-6-event-grid-blob-storage-test)
 - [Step 7: Azure Cosmos DB Output Binding](#step-7-azure-cosmos-db-output-binding)
 - [Step 8: Clean up resources](#step-8-clean-up-resources)
-- [Bonus Material Order Management Orchestration](#bonus-material-order-management-orchestration) 
+- [Bonus Material Order Management Orchestration](#bonus-material-order-management-orchestration)
 - [Bonus Material Keda Scaling](#bonus-material-keda-scaling)
 
 <!-- TOC -->
 
-## Objectives 
+## Objectives
 
-Azure Serverless offerings provide a wide array of capabilites to drive modern application architectures with zero-infrastructure and capital investments. This lab demonstrates Azure PaaS offerings including: 
+Azure Event Driven and Serverless offerings provide a wide array of capabilities to drive modern solution architecture. This lab demonstrates the following Azure services:
 
 - Azure Event Grid
-- Azure Function Apps 
-- Azure Cosmos DB 
-- Azure infrastructure services to include resource groups, storage accounts and familiarization with Azure CLI services
-
-**NOTE: This exercise is a section of a day-long presentation on Azure App Innovation, the complete workshop may be found [here](https://aka.ms/azuredevdaylabs).**
+- Azure Function Apps
+- Azure Cosmos DB
 
 ## Requirements
 
-This example assumes the user already has an Azure subscription with contributor access. Additionally, the following services will be required during the lab: 
+This example assumes the user already has an Azure subscription with contributor access. Additionally, the following services will be required during the lab:
 
-- Azure CLI, [How to install Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
-- Git Bash, [Git Download for Windows](https://gitforwindows.org/)
-- NOTE: Users may use the [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview) as an alternative to downloading Git Bash 
+--To Do--
 
-## Step 1: Setup Azure subscription and properties
-
-Initial login and subscription setup is a required prerequisite
-
-````shell
-export SUBSCRIPTION_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx
-
-# required for gitbash;
-az login 
-
-az account set --subscription $SUBSCRIPTION_ID
-````
-## Set variable properties for substitution, use an [Azure Tag](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/tag-resources?tabs=json#azure-cli) property for uniqueness.
-
-````shell
-# <business-unit> is well-known or unique attribute to distinquish among organizational resources, perhaps for billing, dev, test prod, locales, etc. 
-export REGION=<eastus>
-export TAG_PREFIX=<prefix>${REGION}
-export TAG_VALUE=${REGION}-2022-06-08
-
-export RESOURCE_GROUP=<$TAG_PREFIX-demo-azure-dev-day>
-
-export COSMOSDB_ACCOUNT_NAME=${TAG_PREFIX}-cosmosdb-$RANDOM
-
-# Azure storage account names must be <= 24 characters, letters and numbers only 
-export STORAGE_ACCOUNT_FUNC=stgfn${TAG_PREFIX}${RANDOM}
-export STORAGE_ACCOUNT_EVENT=stgev${TAG_PREFIX}${RANDOM}
-
-export FUNCTION_APPNAME=${TAG_PREFIX}-functionapp-${RANDOM}
-````
-
-NOTE: The region location of the Resource Group may be different than the Azure resources 
-
-## Step 2: Create an Azure Resource Group 
-
-[Create Azure Resource Group](https://docs.microsoft.com/en-us/cli/azure/group?view=azure-cli-latest#az_group_create) use the following command line:
-
-````shell
-az group create --name $RESOURCE_GROUP --location $REGION --tags $TAG_PREFIX=$TAG_VALUE  
-````
-  
 ## Step 3: Create Cosmos DB resources
 
-Creating a Cosmos DB may be accomplished via the [Azure Portal](https://docs.microsoft.com/en-us/azure/cosmos-db/create-cosmosdb-resources-portal), or via the [Azure CLI](https://docs.microsoft.com/en-us/azure/cosmos-db/cli-samples).
+1. Log into the azure portal (https://portal.azure.com).
+1. Select **Azure Cosmos DB** from the search bar results and select **+ Create**.
+1. Select **Azure Cosmos DB for NoSQL**
+1. Enter the following values:
+    1. Basics > Resource Group > Create new: rg-add-serverless-[uniqueid]
+    1. Basics > Account Name: cosmos-add-serverless-[uniqueid]
+    1. Basics > Location: East US
+1. Navigate to the deployed Cosmos DB account.
+1. Select **Data Explorer** from the left menu.
+1. Select **New Container** and enter the following values:
+    1. Database id: AzureDevDay
+    1. Container id: Uploads
+    1. Partition key: /id
+1. Select **Settings > Keys** from the left menu and copy the **Primary Connection String** for use later.
 
-````shell
-az cosmosdb create --name $COSMOSDB_ACCOUNT_NAME --resource-group $RESOURCE_GROUP --tags $TAG_PREFIX=$TAG_VALUE  
-````
- 
- 
-## Step 4: Create Function App  
-<img src="media/Function-Apps.svg" width=75 height=75px>
+## Step 1: Deploy the Azure Function App
 
+1. Log into the azure portal (https://portal.azure.com).
+1. Select **Function App** from the search bar results and select **+ Create**.
+1. Enter the following values:
+    1. Basics > Resource Group: rg-add-serverless-[uniqueid]
+    1. Basics > Name: func-add-serverless-[uniqueid]
+    1. Basics > Runtime stack: Java
+    1. Basics > Version: 11
+    1. Basics > Region: East US
+    1. Hosting > Storage account > Create new: staddsless[uniqueid]
+1. Navigate to the deployed Function App.
+1. Select **Settings > Configuration** and add the following **Application Setting**:
+    1. Name: CosmosConnectionString
+    1. Value: [Primary connection string from above]
 
-### Step 4A: Create Storage Account and Function App
+## Step 3: Deploy the Function App
 
-Creating a Storage Account and Function App via the [Azure Portal](https://portal.azure.com), or via the [Azure CLI](https://docs.microsoft.com/en-us/azure/azure-functions/scripts/functions-cli-create-serverless).
+1. Open the **2-serverless-lab** folder in a terminal with the Azure CLI.
+1. Ensure the Azure CLI is pointing to the right subscription by running
 
-````shell 
-# Create storage account and function app service 
-az storage account create --name $STORAGE_ACCOUNT_FUNC --location $REGION --resource-group $RESOURCE_GROUP --sku Standard_LRS --tags $TAG_PREFIX=$TAG_VALUE  
+   ```bash
+   az account show
+   ```
 
-### Step 4A: Create Function App service (function app service is a placeholder for the event grid function, created in next steps)
+1. Upload the deployment package with the following command:
 
-az functionapp create --name $FUNCTION_APPNAME  --storage-account $STORAGE_ACCOUNT_FUNC \
-	--consumption-plan-location $REGION \
-	--resource-group $RESOURCE_GROUP --functions-version 3 --tags $TAG_PREFIX=$TAG_VALUE 
-````
+    ```bash
+    az functionapp deployment source config-zip -g rg-add-serverless[uniqueid] -n func-add-serverless-[uniqueid] --src deploy-package.zip
+    ```
 
-## Step 5: Create Event Grid 
+## Step 5: Create the Event Grid Topic and Subscription
 
-In this step, a Storage Account will be created, and then an Event Grid System Topic to the previously created Function App 
-- Create a Storage Account
-- Bind an Event Grid System Topic to a Function App 
+1. Log into the azure portal (https://portal.azure.com).
+1. Select **Event Grid System Topics** from the search bar results and select **+ Create**
+1. Enter the following values:
+    1. Basics > Resource group: rg-add-serverless-[uniqueid]
+    1. Basics > Name: eg-add-serverless-blob
+    1. Basics > Region: East US
 
 ### Step 5.a: Create Storage Account for Event Grid, Azure Fuction and Event Grid
 

@@ -1,43 +1,67 @@
 package com.function;
 
-import com.microsoft.azure.functions.ExecutionContext;
-import com.microsoft.azure.functions.HttpMethod;
-import com.microsoft.azure.functions.HttpRequestMessage;
-import com.microsoft.azure.functions.HttpResponseMessage;
-import com.microsoft.azure.functions.HttpStatus;
-import com.microsoft.azure.functions.annotation.AuthorizationLevel;
-import com.microsoft.azure.functions.annotation.FunctionName;
-import com.microsoft.azure.functions.annotation.HttpTrigger;
-
 import java.util.Optional;
 
-/**
- * Azure Functions with HTTP Trigger.
- */
+import com.microsoft.azure.functions.*;
+import com.microsoft.azure.functions.annotation.*;
+
 public class Function {
-    /**
-     * This function listens at endpoint "/api/HttpExample". Two ways to invoke it using "curl" command in bash:
-     * 1. curl -d "HTTP Body" {your host}/api/HttpExample
-     * 2. curl "{your host}/api/HttpExample?name=HTTP%20Query"
-     */
-    @FunctionName("HttpExample")
-    public HttpResponseMessage run(
+    @FunctionName("ProcessFileUpload")
+    public void ProcessFileUpload(
+            @EventGridTrigger(name = "event") String uploadData,
+            @CosmosDBOutput(name = "database",
+                databaseName = "AzureDevDay",
+                collectionName = "Uploads",
+                connectionStringSetting = "CosmosConnectionString") OutputBinding<String> outputItem,
+                final ExecutionContext context) {
+        context.getLogger().info("Uploaded data: " + uploadData);
+        outputItem.setValue(uploadData);
+    }
+    
+    @FunctionName("GetFiles")
+    public HttpResponseMessage GetFiles(
             @HttpTrigger(
                 name = "req",
-                methods = {HttpMethod.GET, HttpMethod.POST},
+                methods = { HttpMethod.GET },
+                route = "files",
                 authLevel = AuthorizationLevel.ANONYMOUS)
-                HttpRequestMessage<Optional<String>> request,
+            HttpRequestMessage<Optional<String>> request,
+            @CosmosDBInput(
+                name = "database",
+                databaseName = "AzureDevDay",
+                collectionName = "Uploads",
+                connectionStringSetting = "CosmosConnectionString",
+                sqlQuery = "select * from u") String uploads,
             final ExecutionContext context) {
-        context.getLogger().info("Java HTTP trigger processed a request.");
+        context.getLogger().info("Retrieved uploads.");
+        return request.createResponseBuilder(HttpStatus.OK).body(uploads).build();
+    }
+    
+    @FunctionName("GetFile")
+    public HttpResponseMessage GetFile(
+            @HttpTrigger(
+                name = "req",
+                methods = { HttpMethod.GET },
+                    route = "files/{id}", 
+                authLevel = AuthorizationLevel.ANONYMOUS)
+            HttpRequestMessage<Optional<String>> request,
+            @CosmosDBInput(
+                name = "database",
+                databaseName = "AzureDevDay",
+                collectionName = "Uploads",
+                connectionStringSetting = "CosmosConnectionString",
+                id = "{id}",
+                partitionKey = "{id}"
+            ) Optional<String> upload,
+            
+            final ExecutionContext context) {
 
-        // Parse query parameter
-        final String query = request.getQueryParameters().get("name");
-        final String name = request.getBody().orElse(query);
-
-        if (name == null) {
-            return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Please pass a name on the query string or in the request body").build();
+        if (upload.isPresent()) {
+            context.getLogger().info("Retrieved upload.");
+            return request.createResponseBuilder(HttpStatus.OK).body(upload.get()).build();
         } else {
-            return request.createResponseBuilder(HttpStatus.OK).body("Hello, " + name).build();
+            context.getLogger().warning("No upload with id found.");
+            return request.createResponseBuilder(HttpStatus.NOT_FOUND).body("No upload with id found.").build();
         }
     }
 }
