@@ -20,7 +20,7 @@ We encourage you to follow along the hands-on labs during lab sessions.
 
 ## Labs
 
-1. [Web Solutions Lab](./1-web-lab)
+1. [Web Solutions Lab](./1-web-lab#azure-dev-day---web-solutions-lab-one)
 1. [Serverless Solutions Lab](./2-event-driven-lab)
 1. [Microservice Solutions Lab](./3-microservice-lab)
 1. [DevOps with GitHub Lab](./4-devops-lab)
