@@ -29,10 +29,35 @@ This example assumes the user already has an Azure subscription with contributor
 
 --To Do--
 
+## Step 1: Create a Resource Group
+
+1. Log into the azure portal (https://portal.azure.com).
+1. Select **Resource Groups** from the search bar results and select **+ Create**.
+1. Enter the following values:
+    1. Basics > Resource Group: rg-add-serverless-[uniqueid]
+    1. Basics > Region: East US
+
 ## Step 3: Create Cosmos DB resources
 
 1. Log into the azure portal (https://portal.azure.com).
 1. Select **Azure Cosmos DB** from the search bar results and select **+ Create**.
+1. Select **Azure Cosmos DB for NoSQL**
+1. Enter the following values:
+    1. Basics > Resource Group: rg-add-serverless-[uniqueid]
+    1. Basics > Account Name: cosmos-add-serverless-[uniqueid]
+    1. Basics > Location: East US
+1. Navigate to the deployed Cosmos DB account.
+1. Select **Data Explorer** from the left menu.
+1. Select **New Container** and enter the following values:
+    1. Database id: AzureDevDay
+    1. Container id: Uploads
+    1. Partition key: /id
+1. Select **Settings > Keys** from the left menu and copy the **Primary Connection String** for use later.
+
+## Step 3: Create a Storage Account
+
+1. Log into the azure portal (https://portal.azure.com).
+1. Select **Storage accounts** from the search bar results and select **+ Create**.
 1. Select **Azure Cosmos DB for NoSQL**
 1. Enter the following values:
     1. Basics > Resource Group > Create new: rg-add-serverless-[uniqueid]
@@ -82,9 +107,10 @@ This example assumes the user already has an Azure subscription with contributor
 1. Log into the azure portal (https://portal.azure.com).
 1. Select **Event Grid System Topics** from the search bar results and select **+ Create**
 1. Enter the following values:
-    1. Basics > Resource group: rg-add-serverless-[uniqueid]
-    1. Basics > Name: eg-add-serverless-blob
-    1. Basics > Region: East US
+    1. Basics > Topic Types: Storage Accounts (Blob & GPv2)
+    2. Basics > Resource group: rg-add-serverless-[uniqueid]
+    3. Basics > Name: eg-add-serverless-blob
+    4. Basics > Region: East US
 
 ### Step 5.a: Create Storage Account for Event Grid, Azure Fuction and Event Grid
 
