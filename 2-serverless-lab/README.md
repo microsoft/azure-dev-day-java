@@ -2,16 +2,14 @@
 
 <!-- TOC -->
 - [Requirements](#requirements)
-- [Step 1: Setup Azure subscription and properties](#step-1-setup-azure-subscription-and-properties)
-- [Step 2: Create an Azure Resource Group ](#step-2-create-an-azure-resource-group)
-- [Step 3: Create Cosmos DB resources](#step-3-create-cosmos-db-resources)
-- [Step 4: Create Function App](#step-4-create-function-app)
-- [Step 5: Create Event Grid](#step-5-create-event-grid)
-- [Step 6: Event Grid Blob Storage Test](#step-6-event-grid-blob-storage-test)
-- [Step 7: Azure Cosmos DB Output Binding](#step-7-azure-cosmos-db-output-binding)
+- [Step 1: Create a Resource Group](#step-1-create-a-resource-group)
+- [Step 2: Create Cosmos DB resources](#step-2-create-cosmos-db-resources)
+- [Step 3: Create a Storage Account](#step-3-create-a-storage-account)
+- [Step 4: Create the Function App](#step-4-create-the-function-app)
+- [Step 5: Deploy the Function App](#step-5-deploy-the-function-app)
+- [Step 6: Create the Event Grid Topic and Subscription](#step-6-create-the-event-grid-topic-and-subscription)
+- [Step 7: Test the Solution](#step-7-test-the-solution)
 - [Step 8: Clean up resources](#step-8-clean-up-resources)
-- [Bonus Material Order Management Orchestration](#bonus-material-order-management-orchestration)
-- [Bonus Material Keda Scaling](#bonus-material-keda-scaling)
 
 <!-- TOC -->
 
@@ -25,49 +23,42 @@ Azure Event Driven and Serverless offerings provide a wide array of capabilities
 
 ## Requirements
 
-This example assumes the user already has an Azure subscription with contributor access. Additionally, the following services will be required during the lab:
-
---To Do--
+This example assumes the user already has an Azure subscription with contributor access.
 
 ## Step 1: Create a Resource Group
 
-1. Log into the azure portal (https://portal.azure.com).
-1. Select **Resource Groups** from the search bar results and select **+ Create**.
-1. Enter the following values:
+1. In the Azure Portal (<https://portal.azure.com>), select **Resource Groups** from the search bar
+1. Select **+ Create** and enter the following values:
     1. Basics > Resource group: rg-add-serverless-[uniqueid]
     1. Basics > Region: East US
 
-## Step 3: Create Cosmos DB resources
+## Step 2: Create Cosmos DB resources
 
-1. Log into the azure portal (https://portal.azure.com).
-1. Select **Azure Cosmos DB** from the search bar results and select **+ Create**.
-1. Select **Azure Cosmos DB for NoSQL**
-1. Enter the following values:
+1. In the Azure portal (<https://portal.azure.com>), select **Azure Cosmos DB** from the search bar
+1. Select **+ Create**, **Azure Cosmos DB for NoSQL**, and enter the following values:
     1. Basics > Resource group: rg-add-serverless-[uniqueid]
     1. Basics > Account name: cosmos-add-serverless-[uniqueid]
     1. Basics > Location: East US
 1. Navigate to the Cosmos DB account.
-1. Select **Data Explorer** from the left menu.
+1. Select **Data Explorer** from the left menu
 1. Select **New Container** and enter the following values:
     1. Database id: AzureDevDay
     1. Container id: Uploads
     1. Partition key: /id
-1. Select **Settings > Keys** from the left menu and copy the **Primary Connection String** for use later.
+1. Select **Settings > Keys** from the left menu and copy the **Primary Connection String** for use later
 
 ## Step 3: Create a Storage Account
 
-1. Log into the azure portal (https://portal.azure.com).
-1. Select **Storage accounts** from the search bar results and select **+ Create**.
-1. Enter the following values:
+1. In the Azure Portal (<https://portal.azure.com>), select **Storage accounts** from the search bar 
+1. Select **+ Create** and enter the following values:
     1. Basics > Resource group: rg-add-serverless-[uniqueid]
     1. Basics > Storage Account name: staddsless[waymack]
     1. Basics > Region: East US
 
-## Step 1: Create the Azure Function App
+## Step 4: Create the Function App
 
-1. Log into the azure portal (https://portal.azure.com).
-1. Select **Function App** from the search bar results and select **+ Create**.
-1. Enter the following values:
+1. In the Azure Portal (<https://portal.azure.com>), select **Function App** from the search bar
+1. Select **+ Create** and enter the following values:
     1. Basics > Resource group: rg-add-serverless-[uniqueid]
     1. Basics > Function App name: func-add-serverless-[uniqueid]
     1. Basics > Runtime stack: Java
@@ -80,10 +71,22 @@ This example assumes the user already has an Azure subscription with contributor
     1. DatabaseName: AzureDevDay
     1. CollectionName: Uploads
 
-## Step 3: Deploy the Function App
+## Step 5: Deploy the Function App
 
-1. Open the **2-serverless-lab** folder in a terminal with the Azure CLI.
-1. Ensure the Azure CLI is pointing to the right subscription by running
+1. In the Azure Portal (<https://portal.azure.com>), open the Cloud Shell
+1. If you haven't already, clone the Azure Dev Day repository:
+
+    ```bash
+    git clone https://github.com/microsoft/azure-dev-day-java
+    ```
+
+1. Navigate to the **2-serverless-lab** folder
+
+    ```bash
+    cd .\azure-dev-day-java\2-serverless-lab
+    ```
+
+1. Ensure the Azure CLI is pointing to the right subscription:
 
    ```bash
    az account show
@@ -95,17 +98,16 @@ This example assumes the user already has an Azure subscription with contributor
     az functionapp deployment source config-zip -g rg-add-serverless-[uniqueid] -n func-add-serverless-[uniqueid] --src deploy-package.zip
     ```
 
-## Step 5: Create the Event Grid Topic and Subscription
+## Step 6: Create the Event Grid Topic and Subscription
 
-1. Log into the azure portal (https://portal.azure.com)
-1. Select **Event Grid System Topics** from the search bar results and select **+ Create**
-1. Enter the following values:
+1. In the Azure Portal (<https://portal.azure.com>), select **Event Grid System Topics** from the search bar
+1. Select **+ Create** and enter the following values:
     1. Basics > Topic Types: Storage Accounts (Blob & GPv2)
     1. Basics > Resource group: rg-add-serverless-[uniqueid]
     1. Basics > Resource: staddsless[uniqueid]
     1. Basics > Name: eg-add-serverless-blob
     1. Basics > Region: East US
-1. Navigate to the Event Grid topic.
+1. Navigate to the Event Grid topic
 1. Select **+ Event Subscription**
 1. Enter the following values:
     1. Basics > Name: FuncSub
@@ -117,9 +119,18 @@ This example assumes the user already has an Azure subscription with contributor
         1. Slot: Production
         1. Function: ProcessFileUpload
 
-## Step 6: Test the Solution
+## Step 7: Test the Solution
 
+1. In the Azure Portal (<https://portal.azure.com>), navigate to the Storage Account created earlier
+1. Select **Data storage > Containers** and select **+ Container** with the following values:
+    1. Name: uploads
+1. Select the **uploads** container and select **^ Upload**
+    1. Upload any file from your machine
+1. In the browser, navigate to the Function App endpoint that displays all uploaded file information
 
+    ```bash
+    https://func-add-serverless-[uniqueid].azurewebsites.net/api/uploads
+    ```
 
 ## Step 8: Clean up resources
 
