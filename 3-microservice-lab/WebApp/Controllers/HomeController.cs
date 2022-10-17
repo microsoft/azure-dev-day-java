@@ -19,17 +19,18 @@ namespace WebApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            string url = "http://" + _configuration["ApiHost"] + "/api/Hostname";
+            string url = _configuration["ApiHost"];
+            ViewData["Hostname"] = url;
+
             try
             {
-                ViewData["HostName"] = await _client.GetStringAsync(url);
+                
+                ViewData["ApiResponse"] = await _client.GetStringAsync(url);
             }
             catch (Exception e)
             {
-                ViewData["HostName"] = e.Message;
+                ViewData["ApiResponse"] = e.Message;
             }
-
-
 
             return View();
         }
