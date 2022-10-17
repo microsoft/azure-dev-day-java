@@ -2,11 +2,10 @@
 
 **Overview**:
 
-- [Requirements](#requirements)
 - [Step 1: Create a Resource Group](#step-1-create-a-resource-group)
-- [Part 1: Deploy and Configure Azure SQL](#part-1-deploy-and-configure-azure-sql)
-- [Part 2: Deploy and Configure App Service](#part-2-deploy-and-configure-app-service)
-- [Part 3: Use Cloud Shell to Deploy the Application](#part-3-use-cloud-shell-to-deploy-the-application)
+- [Step 2: Deploy and Configure Azure SQL](#step-2-deploy-and-configure-azure-sql)
+- [Step 3: Deploy and Configure App Service](#step-3-deploy-and-configure-app-service)
+- [Step 4: Use Cloud Shell to Deploy the Application](#step-4-use-cloud-shell-to-deploy-the-application)
 - [Part 4: Clean Up Azure Resources](#part-4-clean-up-azure-resources)
 
 ## Objectives
@@ -30,7 +29,7 @@ During this lab you will learn to:
     1. Basics > Resource group: rg-add-web-[uniqueid]
     1. Basics > Region: East US
 
-## Step: Deploy and Configure Azure SQL
+## Step 2: Deploy and Configure Azure SQL
 
 1. In the Azure Portal (<https://portal.azure.com>), select **Azure SQL** from the search bar
 1. Select **+ Create**, select **SQL databases > Single database** enter the following values:
@@ -65,34 +64,29 @@ During this lab you will learn to:
     );
     ```
 
-## Part 2: Deploy and Configure App Service
+## Step 3: Deploy and Configure App Service
 
-1. Now with the table created, we can move on to the next step. This step will create a new Web App in Azure App Services. This will be the host for our application. Use the search bar at the top of the page to search for **App Services**. Then click on **App Services**.
-2. Click on **Create**.
-3. Use the same resource group you created earlier (**rg-azure-dev-day**).
-4. Name the app a unique name. For example, if your name is John Doe, you can use **jdoe-app**.
-5. Select **Java 11** for the runtime stack.
-6. Select **Linux** for the operating system.
-7. Select **Java SE** for the Java version.
-8. Use the same region as your Azure SQL database.
-9. Change the SKU and size to **F1**. This can be found under the Dev/Test section.
-
-    ![App Service](./media/f1.png)
-
-10. Final result should look like this.
+1. In the Azure Portal (<https://portal.azure.com>), select **App Services** from the search bar
+1. Select **+ Create** and enter the following values:
+    1. Basics > Resource Group: rg-add-web-[uniqueid]
+    1. Basics > Name: app-add-web-[uniqueid]
+    1. Basics > Runtime stack: Java 11
+    1. Basics > Region: East US
+    1. Basics > Sku and size: Change size
+        1. Dev/Test - B1
+1. Final result should look like this.
 
     ![App Service](./media/webapp.png)
 
-11. Click on **Review + create**. Then click on **Create**.
-12. Once the app is created, click on **Go to resource**.
-13. Configure the app to connect to the Azure SQL database. Click on **Configuration**.
-14. Click on **Advanced edit**. Then paste the following code into the middle of the square brackets.
+11. Navigate to the new App Service
+12. Select **Settings > Configuration** from the left menu
+13. Select **Application settings > Advanced edit** and paste in the following settings
 
     ```json
     {
         "name": "AZ_DB_SERVER_NAME",
         // Replace with the name of your Azure SQL Server
-        "value": "add-dbserver", 
+        "value": "sql-[uniqueid]", 
         "slotSetting": false
     },
     {
@@ -108,7 +102,7 @@ During this lab you will learn to:
     {
         "name": "AZ_SQL_SERVER_PASSWORD",
         // Replace with the password you created for the Azure SQL Server
-        "value": "Your Password Here", 
+        "value": "ABCD1234abcd!", 
         "slotSetting": false
     },
     {
@@ -134,7 +128,7 @@ During this lab you will learn to:
 
 15. Click on **OK**. Then click on **Save** and **Continue**.
 
-## Part 3: Use Cloud Shell to Deploy the Application
+## Step 4: Use Cloud Shell to Deploy the Application
 
 1. Open Azure Cloud Shell. Click on the **Cloud Shell** icon in the top right of the portal. Then click on **Bash**. This will open a terminal window in the portal. You may need to create a storage account. If so, follow the prompts.
 2. In the terminal window, run the following command to clone the repository and navigate to the project folder.
