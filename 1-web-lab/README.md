@@ -3,6 +3,7 @@
 **Overview**:
 
 - [Requirements](#requirements)
+- [Step 1: Create a Resource Group](#step-1-create-a-resource-group)
 - [Part 1: Deploy and Configure Azure SQL](#part-1-deploy-and-configure-azure-sql)
 - [Part 2: Deploy and Configure App Service](#part-2-deploy-and-configure-app-service)
 - [Part 3: Use Cloud Shell to Deploy the Application](#part-3-use-cloud-shell-to-deploy-the-application)
@@ -22,101 +23,47 @@ During this lab you will learn to:
 
 **NOTE: This exercise is a section of a day-long workshop on Azure Dev Day, the complete workshop labs may be found [here](https://aka.ms/azure-dev-day-java).**
 
-## Requirements
+## Step 1: Create a Resource Group
 
-We encourage you to follow along the hands-on labs during lab sessions.
+1. In the Azure Portal (<https://portal.azure.com>), select **Resource Groups** from the search bar
+1. Select **+ Create** and enter the following values:
+    1. Basics > Resource group: rg-add-web-[uniqueid]
+    1. Basics > Region: East US
 
-- If you don't have an Azure Subscription to use for these labs, please create a free subscription at <https://azure.microsoft.com/free/>.
+## Step: Deploy and Configure Azure SQL
 
-## Part 1: Deploy and Configure Azure SQL
+1. In the Azure Portal (<https://portal.azure.com>), select **Azure SQL** from the search bar
+1. Select **+ Create**, select **SQL databases > Single database** enter the following values:
+    1. Basics > Resource group: rg-add-web-[uniqueid]
+    1. Basics > Database name: db
+    1. Basics > Server: Create new
+        1. Server name: sql-[uniqueid]
+        1. Location: East US
+        1. Authentication method: Use SQL authentication
+        1. Server admin login: spring
+        1. Password: ABCD1234abcd!
+    1. Basics > Compute + storage: Configure database
+        1. Service tier: Basic
+    1. Basics > Backup storage redundancy: Locally-redundant backup storage
+    1. Networking > Connectivity method: Public endpoint
+    1. Networking > Allow Azure services: Yes
+    1. Networking > Add current client IP address: Yes
+1. Navigate to the new Azure SQL database
+1. Select **Query Editor** from the left menu
+1. Log in with the database credentials:
+    1. Login: spring
+    1. Password: ABCD1234abcd!
+1. Apply the following script to build the correct schema:
 
-1. Login to the azure portal at <https://portal.azure.com>
-2. Search for thew resource called **Azure SQL** and create a new instance of it.
-
-    ![Search](./media/azuresqlsearch.png)
-    ![Create SQL Server](./media/azuresqlcreate.png)
-
-3. Create a new resource group called **rg-azure-dev-day**.
-
-    ![Create Resource Group](./media/createrg.png)
-
-4. Create a new Azure SQL Server. The name needs to be qunique across Azure, so you can use your initials or something similar. For example, if your name is John Doe, you can use **jdoe-sql**.
-5. Use SQL Authentication and create a new user called **spring** with a password of your choice. Make sure to save the username and password as you will need it later.
-
-    ![Create SQL Server](./media/createdbserver.png)
-
-6. Create a new database called **db**.
-
-    ![Create DB](./media/createdbfinal.png)
-
-7. Once the database and server are created, click on go to resource.
-8. You will see a **Getting Started** page. Click on **Configure** under the Configure access section.
-
-    ![Getting Started](./media/gettingstarteddb.png)
-
-9. Under Public network access, select the radio button for **Selected networks**.
-10. Under Firewall rules, click on **+ Add your client IPv4 address**.
-11. Scroll down to the bottom of the page. Under Exception check the box for **Allow Azure services and resources to access this server**.
-
-    ![Network](./media/dbnetworking.png)
-
-12. Click on **Save**.
-13. On the left hand side of the page select **SQL databases**. Then click on your database **db**.
-14. Add a new table to the database. Option A: Use Query Editor.Option B: Use Azure Data Studio.
-    - Option A:  **Query editor (preview)**.
-        - Use the username and password you created earlier to login.
-
-          ![Login](./media/querypreviewsignin.png)
-
-        - Click on **New Query**.
-
-            ![New Query](./media/querypreviewnewquery.png)
-
-        - Copy and paste the following code into the query window.
-
-            ```sql
-            CREATE TABLE Orders
-            (
-                Id UNIQUEIDENTIFIER PRIMARY KEY,
-                CustomerName NVARCHAR(50) NOT NULL,
-                Product NVARCHAR(20) NOT NULL,
-                Quantity int NOT NULL
-            );
-            ```
-
-        - Click on **Run**.
-    - Option B: **Azure Data Studio**.
-        - Download and install [Azure Data Studio](https://docs.microsoft.com/en-us/sql/azure-data-studio/download-azure-data-studio?view=sql-server-ver15).
-        - Open Azure Data Studio.
-        - Click on **Accounts** icon in the bottom left.
-            
-            ![Accounts](./media/dataexplorerlinkaccount.png)
-
-        - Click on **Add Account**. Follow the prompts to login to your Azure account. Then close screen Linked Accounts pane.
-        - Click on **Connections** icon in the top left.
-        - Click on **New Connection**.
-        - At the top right switch the tab from **Recent** to **Browse**.
-
-            ![Azure Data Studio](./media/azuredatastudio.png)
-
-        - Select Azure and completed the prompts to connect to your Azure SQL database.
-        - The information at the bottom of the screen will fill itself in, you just need to switch the authentication type to **SQL Login** and enter the username and password you created earlier.
-        - Enter the server name, username and password you created earlier.
-        - Click on **Connect**.
-        - Click on **New Query**.
-        - Copy and paste the following code into the query window.
-
-            ```sql
-            CREATE TABLE Orders
-            (
-                Id UNIQUEIDENTIFIER PRIMARY KEY,
-                CustomerName NVARCHAR(50) NOT NULL,
-                Product NVARCHAR(20) NOT NULL,
-                Quantity int NOT NULL
-            );
-            ```
-
-        - Click on **Run**.
+    ```sql
+    CREATE TABLE Orders
+    (
+        Id UNIQUEIDENTIFIER PRIMARY KEY,
+        CustomerName NVARCHAR(50) NOT NULL,
+        Product NVARCHAR(20) NOT NULL,
+        Quantity int NOT NULL
+    );
+    ```
 
 ## Part 2: Deploy and Configure App Service
 
