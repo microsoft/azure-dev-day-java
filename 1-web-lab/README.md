@@ -78,14 +78,13 @@ During this lab you will learn to:
 
     ![App Service](./media/webapp.png)
 
-11. Navigate to the new App Service
-12. Select **Settings > Configuration** from the left menu
-13. Select **Application settings > Advanced edit** and paste in the following settings
+1. Navigate to the new App Service
+1. Select **Settings > Configuration** from the left menu
+1. Select **Application settings > Advanced edit** and paste in the following settings
 
     ```json
     {
         "name": "AZ_DB_SERVER_NAME",
-        // Replace with the name of your Azure SQL Server
         "value": "sql-[uniqueid]", 
         "slotSetting": false
     },
@@ -101,7 +100,6 @@ During this lab you will learn to:
     },
     {
         "name": "AZ_SQL_SERVER_PASSWORD",
-        // Replace with the password you created for the Azure SQL Server
         "value": "ABCD1234abcd!", 
         "slotSetting": false
     },
@@ -122,49 +120,45 @@ During this lab you will learn to:
     }
     ```
 
-    Final Result should look like this
-
-    ![JSON](./media/configsetting.png)
-
-15. Click on **OK**. Then click on **Save** and **Continue**.
+1. Click on **OK**. Then click on **Save** and **Continue**.
 
 ## Step 4: Use Cloud Shell to Deploy the Application
 
 1. Open Azure Cloud Shell. Click on the **Cloud Shell** icon in the top right of the portal. Then click on **Bash**. This will open a terminal window in the portal. You may need to create a storage account. If so, follow the prompts.
-2. In the terminal window, run the following command to clone the repository and navigate to the project folder.
+1. In the terminal window, run the following command to clone the repository and navigate to the project folder.
 
     ```bash
     git clone https://github.com/microsoft/azure-dev-day-java.git && cd azure-dev-day-java/1-web-lab
     ```
 
-3. In the terminal window, run the following command to build the project.
+1. In the terminal window, run the following command to build the project.
 
     ```bash
     mvn package
     ```
 
-4. In the terminal window, run the following command to deploy the project to the Azure App Service.
+1. In the terminal window, run the following command to deploy the project to the Azure App Service.
 
     ```bash
-    az webapp deploy --resource-group rg-azure-dev-day --name app-add  --src-path target/demo.jar --type jar --async true
+    az webapp deploy --resource-group rg-add-web-[uniqueid] --name app-add-web-[uniqueid]  --src-path target/demo.jar --type jar --async true
     ```
 
-5. In the terminal window, run the following command to get the URL of the site. Or you can find it in the Azure portal in your App Service.
+1. In the terminal window, run the following command to get the URL of the site. Or you can find it in the Azure portal in your App Service.
 
     ```bash
-    az webapp show --resource-group rg-azure-dev-day --name app-add --query defaultHostName --output tsv
+    az webapp show --resource-group rg-add-web-[uniqueid] --name app-add-web-[uniqueid] --query defaultHostName --output tsv
     ```
 
     or in the top right of this image you can see the URL. Navigate to your App Service in the Azure portal and click on **Overview**. Then you will see your URL.
 
     ![App Service URL](./media/app-service-url.png))  
 
-6. Copy the URL and paste it into a new browser tab. You should see the following page.
+1. Copy the URL and paste it into a new browser tab. You should see the following page.
 
     ![Web App](./media/WorkingApp.png)
 
 ## Part 4: Clean Up Azure Resources
 
 1. In the Azure portal, Use the search bar to navigate to your resource group (**rg-azure-dev-day**).
-2. Click on **Delete resource group**.
-3. Click on **Delete**.
+1. Click on **Delete resource group**.
+1. Click on **Delete**.
